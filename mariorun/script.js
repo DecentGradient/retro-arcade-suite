@@ -192,6 +192,8 @@ function initLevel() {
 }
 
 function checkCollisions() {
+    if (gameState !== 'PLAYING') return;
+
     player.grounded = false;
 
     // Platform Collisions
