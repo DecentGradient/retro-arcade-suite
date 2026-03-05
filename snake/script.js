@@ -88,13 +88,13 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw Snake
-    ctx.fillStyle = 'lime';
+    ctx.fillStyle = '#00ffff'; // Cyan
     for (let part of trail) {
         ctx.fillRect(part.x * TILE_SIZE, part.y * TILE_SIZE, TILE_SIZE - 2, TILE_SIZE - 2);
     }
 
     // Draw Apple
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = 'orange'; // Orange
     ctx.fillRect(appleX * TILE_SIZE, appleY * TILE_SIZE, TILE_SIZE - 2, TILE_SIZE - 2);
 }
 
