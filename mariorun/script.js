@@ -203,8 +203,11 @@ function checkCollisions() {
             
             // Win Condition
             if (platform.type === 'win') {
-                alert("YOU WIN! Score: " + score);
-                document.location.reload();
+                if (gameState !== 'WIN') {
+                    gameState = 'WIN';
+                    alert("YOU WIN! Score: " + score);
+                    document.location.reload();
+                }
                 return;
             }
 
@@ -263,8 +266,11 @@ function checkCollisions() {
 }
 
 function loseLife() {
+    if (gameState !== 'PLAYING') return;
+    
     lives--;
     if (lives <= 0) {
+        gameState = 'GAMEOVER';
         alert("GAME OVER! Score: " + score);
         document.location.reload();
     } else {
@@ -278,6 +284,8 @@ function loseLife() {
 }
 
 function update() {
+    if (gameState !== 'PLAYING') return;
+
     player.update();
     
     // Update Camera (Follow player)
@@ -310,7 +318,9 @@ function draw() {
 function loop() {
     update();
     draw();
-    requestAnimationFrame(loop);
+    if (gameState === 'PLAYING') {
+        requestAnimationFrame(loop);
+    }
 }
 
 // Input Handling
