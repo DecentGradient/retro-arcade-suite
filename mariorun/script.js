@@ -188,6 +188,11 @@ function initLevel() {
     coins.push(new Coin(1000, 500));
     coins.push(new Coin(1050, 500));
 
+    // Additional Coins for Original Section
+    coins.push(new Coin(850, 450)); // Gap jump arc
+    coins.push(new Coin(1100, 350)); // On high platform
+    coins.push(new Coin(1200, 350)); // On high platform
+
     // --- EXTENDED SECTION (2600 - 5000) ---
     
     // New Ground Segments
@@ -214,25 +219,36 @@ function initLevel() {
     enemies.push(new Enemy(3800, 510, 200)); // Another guard under islands
     enemies.push(new Enemy(4400, 510, 400)); // Final long guard
 
-    // New Coins
-    // On stairs
+    // New Coins - Stairs
     coins.push(new Coin(2800, 400));
     coins.push(new Coin(2950, 300));
     coins.push(new Coin(3100, 200)); 
+    coins.push(new Coin(2750, 400)); // Extra
+    coins.push(new Coin(2900, 300)); // Extra
     
-    // Under islands
+    // New Coins - Under islands
     coins.push(new Coin(3500, 500));
     coins.push(new Coin(3800, 500));
+    coins.push(new Coin(3600, 500)); // Extra
 
-    // On islands
+    // New Coins - On islands (Arc)
+    coins.push(new Coin(3425, 250));
     coins.push(new Coin(3475, 250));
+    coins.push(new Coin(3525, 250)); // Cluster 1
+    
+    coins.push(new Coin(3725, 250));
     coins.push(new Coin(3775, 250));
-    coins.push(new Coin(4075, 250));
+    coins.push(new Coin(3825, 250)); // Cluster 2
 
-    // Final stretch coins
+    coins.push(new Coin(4025, 250));
+    coins.push(new Coin(4075, 250));
+    coins.push(new Coin(4125, 250)); // Cluster 3
+
+    // New Coins - Final stretch
     coins.push(new Coin(4500, 500));
     coins.push(new Coin(4600, 500));
     coins.push(new Coin(4700, 500));
+    coins.push(new Coin(4800, 500)); // Bonus leading to flag
 
     // Win Platform (Moved to end)
     platforms.push(new Platform(5000, 500, 50, 50, 'win')); 
