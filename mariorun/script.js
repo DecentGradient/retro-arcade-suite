@@ -163,6 +163,7 @@ function initLevel() {
     enemies.length = 0;
     coins.length = 0;
 
+    // --- ORIGINAL SECTION (0 - 2500) ---
     // Ground segments (with gaps)
     platforms.push(new Platform(0, 550, 800, 50));
     platforms.push(new Platform(900, 550, 600, 50));
@@ -174,21 +175,67 @@ function initLevel() {
     platforms.push(new Platform(1100, 400, 150, 20));
     platforms.push(new Platform(1300, 250, 150, 20));
     
-    // Win Platform
-    platforms.push(new Platform(2500, 500, 50, 50, 'win')); // The Flag base
-
-    // Enemies
+    // Original Enemies
     enemies.push(new Enemy(400, 510, 200));
     enemies.push(new Enemy(1000, 510, 300));
     enemies.push(new Enemy(1700, 510, 200));
 
-    // Coins
+    // Original Coins
     coins.push(new Coin(350, 350));
     coins.push(new Coin(550, 250));
     coins.push(new Coin(1150, 350));
     coins.push(new Coin(1350, 200));
     coins.push(new Coin(1000, 500));
     coins.push(new Coin(1050, 500));
+
+    // --- EXTENDED SECTION (2600 - 5000) ---
+    
+    // New Ground Segments
+    platforms.push(new Platform(2700, 550, 500, 50)); // 2700-3200
+    platforms.push(new Platform(3300, 550, 800, 50)); // 3300-4100
+    platforms.push(new Platform(4300, 550, 800, 50)); // 4300-5100 (Final stretch)
+
+    // New Floating Platforms - "Stairs" challenge
+    platforms.push(new Platform(2750, 450, 100, 20));
+    platforms.push(new Platform(2900, 350, 100, 20));
+    platforms.push(new Platform(3050, 250, 100, 20)); // Peak of stairs
+
+    // New Floating Platforms - High Islands
+    platforms.push(new Platform(3400, 300, 150, 20));
+    platforms.push(new Platform(3700, 300, 150, 20));
+    platforms.push(new Platform(4000, 300, 150, 20)); // Long jump series
+
+    // Tricky final jumps
+    platforms.push(new Platform(4150, 450, 80, 20)); // Small safety platform
+
+    // New Enemies
+    enemies.push(new Enemy(2800, 510, 300)); // Guarding first new ground
+    enemies.push(new Enemy(3400, 510, 200)); // Guarding under islands
+    enemies.push(new Enemy(3800, 510, 200)); // Another guard under islands
+    enemies.push(new Enemy(4400, 510, 400)); // Final long guard
+
+    // New Coins
+    // On stairs
+    coins.push(new Coin(2800, 400));
+    coins.push(new Coin(2950, 300));
+    coins.push(new Coin(3100, 200)); 
+    
+    // Under islands
+    coins.push(new Coin(3500, 500));
+    coins.push(new Coin(3800, 500));
+
+    // On islands
+    coins.push(new Coin(3475, 250));
+    coins.push(new Coin(3775, 250));
+    coins.push(new Coin(4075, 250));
+
+    // Final stretch coins
+    coins.push(new Coin(4500, 500));
+    coins.push(new Coin(4600, 500));
+    coins.push(new Coin(4700, 500));
+
+    // Win Platform (Moved to end)
+    platforms.push(new Platform(5000, 500, 50, 50, 'win')); 
 }
 
 function checkCollisions() {
