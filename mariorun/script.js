@@ -36,6 +36,7 @@ class Player {
         this.jumpPower = 15;
         this.grounded = false;
         this.color = 'red';
+        this.isSuper = false;
     }
 
     update() {
@@ -60,10 +61,6 @@ class Player {
             this.y = CANVAS_HEIGHT - this.height;
             this.dy = 0;
             this.grounded = true;
-            
-            // Death by falling (if we had pits, this logic would change)
-            // But for now, let's say falling below canvas (pits) kills you.
-            // Since we have a "floor" platform, we handle pits differently.
         }
     }
 
@@ -73,7 +70,8 @@ class Player {
         ctx.fillRect(this.x - cameraX, this.y, this.width, this.height);
         // Draw hat/details (simple)
         ctx.fillStyle = 'blue';
-        ctx.fillRect(this.x - cameraX, this.y + 20, this.width, 20); // Pants
+        let pantsHeight = this.isSuper ? 30 : 20;
+        ctx.fillRect(this.x - cameraX, this.y + (this.height - pantsHeight), this.width, pantsHeight); // Pants
     }
 }
 
@@ -152,16 +150,39 @@ class Coin {
     }
 }
 
+// Powerup Class
+class Powerup {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 30;
+        this.height = 30;
+        this.collected = false;
+    }
+
+    draw() {
+        if (this.collected) return;
+        ctx.fillStyle = '#00FF00'; // Green Mushroom
+        ctx.beginPath();
+        ctx.arc(this.x - cameraX + 15, this.y + 15, 15, Math.PI, 0); // Top half circle
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.fillRect(this.x - cameraX + 10, this.y + 15, 10, 15); // Stem
+    }
+}
+
 // Level Setup
 const player = new Player();
 const platforms = [];
 const enemies = [];
 const coins = [];
+const powerups = [];
 
 function initLevel() {
     platforms.length = 0;
     enemies.length = 0;
     coins.length = 0;
+    powerups.length = 0;
 
     // --- ORIGINAL SECTION (0 - 2500) ---
     // Ground segments (with gaps)
@@ -193,12 +214,16 @@ function initLevel() {
     coins.push(new Coin(1100, 350)); // On high platform
     coins.push(new Coin(1200, 350)); // On high platform
 
-    // --- EXTENDED SECTION (2600 - 5000) ---
+    // Powerup 1
+    powerups.push(new Powerup(700, 520));
+
+    // --- EXTENDED SECTION (2600 - 6500) ---
     
     // New Ground Segments
     platforms.push(new Platform(2700, 550, 500, 50)); // 2700-3200
     platforms.push(new Platform(3300, 550, 800, 50)); // 3300-4100
-    platforms.push(new Platform(4300, 550, 800, 50)); // 4300-5100 (Final stretch)
+    platforms.push(new Platform(4300, 550, 800, 50)); // 4300-5100
+    platforms.push(new Platform(5300, 550, 1200, 50)); // 5300-6500 (Final stretch)
 
     // New Floating Platforms - "Stairs" challenge
     platforms.push(new Platform(2750, 450, 100, 20));
@@ -212,46 +237,56 @@ function initLevel() {
 
     // Tricky final jumps
     platforms.push(new Platform(4150, 450, 80, 20)); // Small safety platform
+    platforms.push(new Platform(5150, 400, 100, 20)); // Between pits
 
     // New Enemies
     enemies.push(new Enemy(2800, 510, 300)); // Guarding first new ground
     enemies.push(new Enemy(3400, 510, 200)); // Guarding under islands
     enemies.push(new Enemy(3800, 510, 200)); // Another guard under islands
-    enemies.push(new Enemy(4400, 510, 400)); // Final long guard
+    enemies.push(new Enemy(4400, 510, 400)); // Long guard
+    enemies.push(new Enemy(5400, 510, 300)); // Final stretch guard 1
+    enemies.push(new Enemy(5800, 510, 300)); // Final stretch guard 2
 
     // New Coins - Stairs
     coins.push(new Coin(2800, 400));
     coins.push(new Coin(2950, 300));
     coins.push(new Coin(3100, 200)); 
-    coins.push(new Coin(2750, 400)); // Extra
-    coins.push(new Coin(2900, 300)); // Extra
+    coins.push(new Coin(2750, 400)); 
+    coins.push(new Coin(2900, 300)); 
     
     // New Coins - Under islands
     coins.push(new Coin(3500, 500));
     coins.push(new Coin(3800, 500));
-    coins.push(new Coin(3600, 500)); // Extra
+    coins.push(new Coin(3600, 500)); 
 
     // New Coins - On islands (Arc)
     coins.push(new Coin(3425, 250));
     coins.push(new Coin(3475, 250));
-    coins.push(new Coin(3525, 250)); // Cluster 1
+    coins.push(new Coin(3525, 250)); 
     
     coins.push(new Coin(3725, 250));
     coins.push(new Coin(3775, 250));
-    coins.push(new Coin(3825, 250)); // Cluster 2
+    coins.push(new Coin(3825, 250)); 
 
     coins.push(new Coin(4025, 250));
     coins.push(new Coin(4075, 250));
-    coins.push(new Coin(4125, 250)); // Cluster 3
+    coins.push(new Coin(4125, 250)); 
+
+    // Powerup 2 & 3
+    powerups.push(new Powerup(3050, 220)); // Top of stairs
+    powerups.push(new Powerup(5500, 520)); // Final stretch safety
 
     // New Coins - Final stretch
     coins.push(new Coin(4500, 500));
     coins.push(new Coin(4600, 500));
     coins.push(new Coin(4700, 500));
-    coins.push(new Coin(4800, 500)); // Bonus leading to flag
+    coins.push(new Coin(4800, 500));
+    coins.push(new Coin(5600, 450));
+    coins.push(new Coin(5700, 450));
+    coins.push(new Coin(5800, 450)); // Bonus leading to flag
 
     // Win Platform (Moved to end)
-    platforms.push(new Platform(5000, 500, 50, 50, 'win')); 
+    platforms.push(new Platform(6000, 500, 50, 50, 'win')); 
 }
 
 function checkCollisions() {
@@ -268,11 +303,7 @@ function checkCollisions() {
             
             // Win Condition
             if (platform.type === 'win') {
-                if (gameState !== 'WIN') {
-                    gameState = 'WIN';
-                    alert("YOU WIN! Score: " + score);
-                    document.location.reload();
-                }
+                gameState = 'WIN';
                 return;
             }
 
@@ -287,8 +318,6 @@ function checkCollisions() {
                 player.dy = 0;
                 player.y = platform.y + platform.height;
             }
-            // Side collision (simplified, often buggy in simple implementations but sufficient here)
-            // Left/Right collisions are complex with AABB, for this scope we focus on vertical.
         }
     }
 
@@ -328,22 +357,53 @@ function checkCollisions() {
             score += 50;
         }
     }
+
+    // Powerup Collection
+    for (let powerup of powerups) {
+        if (!powerup.collected &&
+            player.x < powerup.x + powerup.width &&
+            player.x + player.width > powerup.x &&
+            player.y < powerup.y + powerup.height &&
+            player.y + player.height > powerup.y) {
+            
+            powerup.collected = true;
+            score += 200;
+            
+            if (!player.isSuper) {
+                player.isSuper = true;
+                player.height = 60; // Grow taller
+                player.y -= 20; // Adjust position so it doesn't get stuck in the floor
+            } else {
+                lives++; // Give extra life if already super
+            }
+        }
+    }
 }
 
 function loseLife() {
     if (gameState !== 'PLAYING') return;
-    
+
+    if (player.isSuper) {
+        player.isSuper = false;
+        player.height = 40;
+        player.y += 20; // Correct for height change
+        player.dy = -10; // Bounce effect
+        player.dx = player.dx > 0 ? -10 : 10; // Bounce backwards slightly
+        return;
+    }
+
     lives--;
     if (lives <= 0) {
         gameState = 'GAMEOVER';
-        alert("GAME OVER! Score: " + score);
-        document.location.reload();
     } else {
-        // Respawn
+        // Respawn (soft reset without stopping the loop)
         player.x = 100;
         player.y = CANVAS_HEIGHT - 100;
         player.dx = 0;
         player.dy = 0;
+        player.width = 40;
+        player.height = 40;
+        player.isSuper = false;
         cameraX = 0;
     }
 }
@@ -357,7 +417,7 @@ function update() {
     if (player.x > CANVAS_WIDTH / 3) {
         cameraX = player.x - CANVAS_WIDTH / 3;
     }
-    // Prevent camera form going left of 0
+    // Prevent camera from going left of 0
     if (cameraX < 0) cameraX = 0;
 
     enemies.forEach(e => e.update());
@@ -372,12 +432,39 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Draw Background (Sky is handled by CSS, maybe clouds here?)
+    // Draw Background (Sky is handled by CSS)
     
     platforms.forEach(p => p.draw());
     coins.forEach(c => c.draw());
+    powerups.forEach(p => p.draw());
     enemies.forEach(e => e.draw());
     player.draw();
+
+    // Draw Overlays
+    if (gameState === 'GAMEOVER') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.fillStyle = 'red';
+        ctx.font = '40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText("GAME OVER", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+        ctx.fillStyle = 'white';
+        ctx.font = '20px Arial';
+        ctx.fillText("Press Space to Restart", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
+        ctx.textAlign = 'left';
+    } else if (gameState === 'WIN') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.fillStyle = 'gold';
+        ctx.font = '40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText("YOU WIN!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+        ctx.fillStyle = 'white';
+        ctx.font = '20px Arial';
+        ctx.fillText("Score: " + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
+        ctx.fillText("Press Space to Play Again", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 60);
+        ctx.textAlign = 'left';
+    }
 }
 
 function loop() {
@@ -390,9 +477,27 @@ function loop() {
 
 // Input Handling
 window.addEventListener('keydown', (e) => {
+    // Restart Game Handle
+    if (gameState !== 'PLAYING' && (e.code === 'Space' || e.code === 'Enter')) {
+        score = 0;
+        lives = 3;
+        gameState = 'PLAYING';
+        cameraX = 0;
+        player.x = 100;
+        player.y = CANVAS_HEIGHT - 100;
+        player.dx = 0;
+        player.dy = 0;
+        player.width = 40;
+        player.height = 40;
+        player.isSuper = false;
+        initLevel(); // Re-initialize level content
+        loop(); // Resume loop
+        return;
+    }
+
     if (e.code === 'ArrowRight') keys.right = true;
     if (e.code === 'ArrowLeft') keys.left = true;
-    if ((e.code === 'ArrowUp' || e.code === 'Space') && player.grounded) {
+    if ((e.code === 'ArrowUp' || e.code === 'Space') && player.grounded && gameState === 'PLAYING') {
         player.dy = -player.jumpPower;
         player.grounded = false;
     }
